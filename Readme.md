@@ -2,6 +2,8 @@
 
 This project is a simple Shopping List web application that allows users to add, filter, and remove items from their shopping list. It is built using HTML, CSS, and JavaScript.
 
+Here is the link to the site: https://amerb908.github.io/shopping-list-Belal/
+
 ## Features
 - Add items to the shopping list.
 - Filter items in the shopping list.
