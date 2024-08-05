@@ -3,7 +3,8 @@ const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById('item-list');
 const clearBtn = document.getElementById('clear');
 const itemFilter = document.getElementById('filter');
-//const items = itemList.querySelectorAll('li');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
 
 //displaying items from local storage
 function displayItems()
@@ -26,6 +27,25 @@ function onAddItemSubmit(e)
         alert('Please add an item');
         return;
     }
+
+    //check for edit mode
+    if (isEditMode)
+    {
+        const itemToEdit = itemList.querySelector('.edit-mode');
+        removeItemFromStorage(itemToEdit.textContent);
+        itemToEdit.classList.remove('edit-mode');
+        itemToEdit.remove();
+        isEditMode = false;
+    }
+    else
+    {
+        if (checkIfItemExists(newItem))
+        {
+            alert('That item already exists');
+            return;
+        }
+    }
+
     //create item DOM element
     addItemToDom(newItem);
 
@@ -118,12 +138,47 @@ function getItemFromStorage()
     return itemsFromStorage;
 }
 
+function setItemToEdit(item)
+{
+    isEditMode = true;
+
+    const items = itemList.querySelectorAll('li');
+    items.forEach((i) => 
+    {
+        if (i === item)
+        {
+            i.classList.add('edit-mode');
+        }
+        else
+        {
+            i.classList.remove('edit-mode');
+        }
+    });
+
+    //calling edit-mode from css
+    formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+    formBtn.style.backgroundColor = '#28a745';
+    itemInput.value = item.textContent;
+
+}
+
 function onClickItem(e)
 {
     if (e.target.parentElement.classList.contains('remove-item'))
     {
         removeItem(e.target.parentElement.parentElement);        
     }
+    else
+    {
+        setItemToEdit(e.target);
+    }
+}
+
+function checkIfItemExists(item)
+{
+    const itemsFromStorage = getItemFromStorage();
+
+    return itemsFromStorage.includes(item);
 }
 
 //removing an item from the list
@@ -171,6 +226,8 @@ function clearItem(e)
 
 function checkUI()
 {
+    itemInput.value = '';
+
     const items = itemList.querySelectorAll('li');
     
     
@@ -184,9 +241,12 @@ function checkUI()
         clearBtn.style.display = 'block';
         itemFilter.style.display = 'block';
     }
+
+    formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+    formBtn.style.backgroundColor = '#333';
+
+    isEditMode = false;
 }
-
-
 
 //initialize app
 function init()
